@@ -48,6 +48,9 @@ const UserLogin = ({ onLogin }) => {
       console.log('Data:', data);
       if (response.ok) {
         localStorage.setItem('token', data.token);
+        localStorage.setItem('isLoggedIn', true);
+        localStorage.setItem('isAdmin', data.role === 'admin');
+
         console.log('Token:', data.token);
         const userResponse = await fetch('http://localhost:3000/users', {
           method: 'GET',

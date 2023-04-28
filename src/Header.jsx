@@ -7,7 +7,7 @@ import { Menu as MenuIcon, AccountCircle, ArrowDropDown } from '@mui/icons-mater
 const theme = {
   palette: {
     primary: {
-      main: '#5D4037',
+      main: '#795548', // brownish undertone
     },
     secondary: {
       main: '#9E9E9E',
@@ -27,6 +27,14 @@ const StyledAppBar = styled(AppBar)`
   color: ${props => props.theme.palette.text.primary};
   box-shadow: none;
   border-bottom: 2px solid ${props => props.theme.palette.secondary.main};
+
+  /* Override MUI styles */
+  @media (min-width: 600px) {
+    .MuiToolbar-root {
+      min-height: 64px;
+      background-color: #8d6e63; // brownish undertone
+    }
+  }
 `;
 
 const StyledTypography = styled(Typography)`
@@ -75,26 +83,7 @@ const Header = ({ onMenuButtonClick }) => {
                 color="inherit"
               >
                 <AccountCircle />
-                <ArrowDropDown />
               </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={open}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>Logout</MenuItem>
-              </Menu>
             </div>
           </Toolbar>
         </StyledAppBar>
@@ -104,6 +93,7 @@ const Header = ({ onMenuButtonClick }) => {
 };
 
 export default Header;
+
 
 
 
