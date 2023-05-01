@@ -9,6 +9,9 @@ import {
   Box,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useSpring, animated } from 'react-spring';
+
+
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Name is required'),
@@ -18,37 +21,66 @@ const validationSchema = Yup.object().shape({
   updatedAt: Yup.date().required('Updated At is required'),
 });
 
-const StyledTextField = styled(TextField)({
-  '& .MuiOutlinedInput-root': {
-    background: '#f5f5f5',
-    borderRadius: 100,
-    '&:hover fieldset': {
-      borderColor: '#b8b8b8',
-    },
-  },
-  '& .Mui-focused fieldset': {
-    borderColor: '#b8b8b8',
-  },
-});
 
-const StyledButton = styled(Button)({
-  alignSelf:"center",
-  background: 'linear-gradient(45deg, #8D6E63 30%, #A1887F 90%)',
-  borderRadius: "20%",
-  width:"30%",
-  border: 0,
-  color: 'white',
-  height: 48,
-  padding: '0 30px',
-  boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
-});
+
+
+
+
+
+
+const StyledButton = styled(animated(Button)) `
+  align-self:center;
+  background: linear-gradient(to bottom, #8B4513, #FFA500);
+  color: #fff;
+  padding: 12px 36px;
+  width:50%;
+  position: relative;
+  margin-top:10px;
+  overflow: hidden;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 0 0 2px #ffbe0b, 0 0 20px rgba(255, 110, 157, 0.5),
+    inset 0 0 0 2px #fff;
+  transition: all 0.3s ease-out;
+  &:hover {
+    box-shadow: 0 0 0 3px #ffbe0b, 0 0 40px rgba(255, 110, 157, 0.6),
+      inset 0 0 0 2px #fff;
+  }
+  &:active {
+    box-shadow: 0 0 0 3px #ffbe0b, 0 0 40px rgba(255, 110, 157, 0.6),
+      inset 0 0 0 2px #fff;
+  }
+  &:focus {
+    outline: none;
+  }
+`; 
+const StyledTextField = styled(animated(TextField))`
+  & .MuiOutlinedInput-root {
+    background: #f5f5f5;
+    border-radius: 100px;
+    &:hover fieldset {
+      border-color: #b8b8b8;
+    }
+  }
+  & .Mui-focused fieldset {
+    border-color: #b8b8b8;
+  }
+ 
+`;
+
+
+
+
+
+
+
+
 
 const ProductEdit = () => {
   const { id } = useParams();
   const [product, setProduct] = useState({});
   const [errors, setErrors] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
-  const [formData, setFormData] = useState({});
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -57,7 +89,6 @@ const ProductEdit = () => {
         if (response.ok) {
           const data = await response.json();
           setProduct(data);
-          setFormData(data);
         } else {
           const errorData = await response.json();
           setErrors(errorData.message);
@@ -69,12 +100,23 @@ const ProductEdit = () => {
     };
     fetchProduct();
   }, [id]);
-
  
+  const successAnimation = useSpring({
+    from: { opacity: 0 },
+    to: { opacity: successMessage ? 1 : 0 },
+    config: { duration: 300 },
+  });
+
+  const animationProps = useSpring({
+    from: { transform: 'scale(0.9)' },
+    to: { transform: 'scale(1)' },
+  });
+ 
+
+
 
   const handleUpdate = async (values, { setSubmitting }) => {
     try {
-      // Get the token from localStorage
       const token = localStorage.getItem('token');
   
       // Make the fetch request with the token in the header
@@ -91,7 +133,7 @@ const ProductEdit = () => {
         const data = await response.json();
         console.log(data);
         setProduct(data);
-        setFormData(data);
+        setSuccessMessage('Product updated successfully!');
       } else {
         const errorData = await response.json();
         setErrors(errorData.message);
@@ -116,16 +158,8 @@ const ProductEdit = () => {
       style = {{display:"flex", justifyContent:"center", alignSelf:"center"}}>
         Edit Product
       </Typography>
-      {errors && (
-        <Typography variant="body1" color="error" mb={2}>
-          {errors}
-        </Typography>
-      )}
-      {successMessage && (
-        <Typography variant="body1" color="success" mb={2}>
-          {successMessage}
-        </Typography>
-      )}
+    
+   
       {Object.keys(product).length > 0 && (
         <Formik
           initialValues={{
@@ -140,7 +174,8 @@ const ProductEdit = () => {
         >
           {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
-              <StyledTextField
+              < StyledTextField 
+                style = {animationProps}
                 sx={{ mb: 2 }}
                 label="Name"
                 name="name"
@@ -150,7 +185,8 @@ const ProductEdit = () => {
                 error={touched.name && Boolean(errors.name)}
                 helperText={touched.name && errors.name}
               />
-              <StyledTextField
+              < StyledTextField 
+                style = {animationProps}
                 sx={{ mb: 2 }}
                 label="Category ID"
                 name="furnitureCategoryId"
@@ -160,7 +196,8 @@ const ProductEdit = () => {
                 error={touched.furnitureCategoryId && Boolean(errors.furnitureCategoryId)}
                 helperText={touched.furnitureCategoryId && errors.furnitureCategoryId}
               />
-              <StyledTextField
+              < StyledTextField   
+                style = {animationProps}
                 sx={{ mb: 2 }}
                 label="Price"
                 name="price"
@@ -171,7 +208,8 @@ const ProductEdit = () => {
                 helperText={touched.price && errors.price}
                 type="number"
               />
-              <StyledTextField
+              < StyledTextField 
+               style = {animationProps}
                 sx={{ mb: 2 }}
                 label="Created At"
                 name="createdAt"
@@ -182,7 +220,8 @@ const ProductEdit = () => {
                 helperText={touched.createdAt && errors.createdAt}
                 type="datetime-local"
               />
-              <StyledTextField
+              < StyledTextField 
+                style = {animationProps}
                 sx={{ mb: 2 }}
                 label="Updated At"
                 name="updatedAt"
@@ -193,7 +232,8 @@ const ProductEdit = () => {
                 helperText={touched.updatedAt && errors.updatedAt}
                 type="datetime-local"
               />
-  
+              
+               <animated.div style={successAnimation}>{successMessage}</animated.div>
               <StyledButton variant="contained" color="primary" type="submit" disabled={isSubmitting}>
                 Update Product
               </StyledButton>

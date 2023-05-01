@@ -1,9 +1,21 @@
 
 import React from 'react';
-import { Box, Button, Typography } from '@mui/material';
-import { Formik, Form, Field } from 'formik';
+import { Box, Typography, TextField, Button, Select, MenuItem } from '@mui/material';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import { styled } from '@mui/material/styles';
+
+
+const RegistrationButton = styled(Button)({
+  marginTop: '30px',
+  borderRadius: '25px',
+  backgroundColor: '#535353',
+  color: '#fff',
+  '&:hover': {
+    backgroundColor: '#6b6b6b',
+  },
+});
 
 const UserRegistration = () => {
   const navigate = useNavigate();
@@ -28,7 +40,6 @@ const UserRegistration = () => {
       setSubmitting(false);
     }
   };
-
   return (
     <Box
       sx={{
@@ -37,11 +48,10 @@ const UserRegistration = () => {
         alignItems: 'center',
         justifyContent: 'center',
         minHeight: 'calc(100vh - 64px)',
-
       }}
     >
       <Typography variant="h4" sx={{ mb: 2 }}>
-        User Registration
+         Registration
       </Typography>
       <Formik
         initialValues={{ email: '', password: '', confirmPassword: '', role: 'user' }}
@@ -61,57 +71,62 @@ const UserRegistration = () => {
         })}
         onSubmit={handleSubmit}
       >
-        {({ values, errors, touched}) => (
-         <Form
-         style={{ display: "flex", flexDirection: "column" }}
-         onSubmit={(e) => {
-           e.preventDefault();
-           handleSubmit();
-         }}
-       >
-            <label htmlFor="email">Email</label>
-            <Field
-             style={{minHeight: 40, minWidth: 250,marginBottom:10}}
-             name="email" 
-             type="email" 
-             value={values.email} />
-            { touched.email && errors.email ? <div style={{ color:"red", marginBottom:10 }}>{errors.email}</div> : null}
-
-            <label htmlFor="password">Password</label>
-            <Field 
-             as="input"
-             style={{ minHeight: 40, marginBottom:10 }}
-            name="password" 
-            type="password" 
-            value={values.password}  />
-            { touched.password && errors.password ? <div  style={{ color:"red", marginBottom:10 }}>{errors.password}</div> : null}
-
-            <label htmlFor="confirmPassword">Confirm Password</label>
-            <Field 
-            as="input"
-            style={{ minHeight: 40,  marginBottom:10 }}
-            name="confirmPassword" 
-            type="password" 
-            value={values.confirmPassword}  />
-            { touched.confirmPassword && errors.confirmPassword ? <div  style={{ color:"red", marginBottom:10 }}
->{errors.confirmPassword}</div> : null}
-            <label htmlFor="role">Role</label>
-            <Field   style={{ minHeight:40}}
-            name="role"
-             as="select" 
-             value={values.role}>
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-        </Field>
-{errors.role ? <div  style={{ color:"red"}}>{errors.role}</div> : null}
-    <Button  type="submit" variant = 'outlined' sx={{ mt: 3 }}>
-     Register
-  </Button>
- </Form>
-)}
-</Formik>
-</Box>
-);
+        {({ values, errors, touched, handleChange }) => (
+          <Form style={{ display: 'flex', flexDirection: 'column', minWidth: 300 }}>
+            <TextField
+              label="Email"
+              variant="outlined"
+              name="email"
+              type="email"
+              value={values.email}
+              onChange={handleChange}
+              sx={{ marginBottom: 2 }}
+              error={touched.email && Boolean(errors.email)}
+              helperText={touched.email && errors.email}
+            />
+            <TextField
+              label="Password"
+              variant="outlined"
+              name="password"
+              type="password"
+              value={values.password}
+              onChange={handleChange}
+              sx={{ marginBottom: 2 }}
+              error={touched.password && Boolean(errors.password)}
+              helperText={touched.password && errors.password}
+            />
+            <TextField
+              label="Confirm Password"
+              variant="outlined"
+              name="confirmPassword"
+              type="password"
+              value={values.confirmPassword}
+              onChange={handleChange}
+              sx={{ marginBottom: 2 }}
+              error={touched.confirmPassword && Boolean(errors.confirmPassword)}
+              helperText={touched.confirmPassword && errors.confirmPassword}
+            />
+            <Select
+              label="Role"
+              variant="outlined"
+              name="role"
+              value={values.role}
+              onChange={handleChange}
+              sx={{ marginBottom: 2 }}
+              error={touched.role && Boolean(errors.role)}
+            >
+              <MenuItem value="user">User</MenuItem>
+              <MenuItem value="admin">Admin</MenuItem>
+            </Select>
+            {errors.role && <div style={{ color: 'red', marginBottom: 10 }}>{errors.role}</div>}
+            <RegistrationButton type="submit" variant="contained" sx={{ mt: 3 }}>
+              Register
+            </RegistrationButton>
+          </Form>
+        )}
+      </Formik>
+    </Box>
+  );
 };
 
 export default UserRegistration;
