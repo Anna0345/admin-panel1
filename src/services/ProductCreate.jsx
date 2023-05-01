@@ -1,61 +1,130 @@
-
 import { useState } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { TextField, Button, Typography } from '@mui/material';
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-radius: 0.5rem;
-  background-color: #f0f0f0;
+  justify-content: center;
+  border-radius: 1rem;
+  background-color: #fff9e6;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   padding: 2rem;
+`;
+
+const fadeIn = keyframes`
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+    filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.5));
+  }
 `;
 
 const Heading = styled.h2`
   font-size: 2rem;
   font-weight: bold;
-  margin-bottom: 1rem;
-  color: #333333;
+  margin-bottom: 2rem;
+  color: #3e2723;
+  animation: ${fadeIn} 1s ease-in-out;
 `;
 
 const StyledTextField = styled(TextField)`
   width: 100%;
+  max-width: 20rem;
   margin-bottom: 1rem;
   label {
+    display: flex;
+    flex-direction: column;
     font-size: 1.2rem;
     font-weight: bold;
-    color: #000000;
+    color: #5d4037;
   }
   input {
+    display: flex;
+    flex-direction: column;
     font-size: 1.2rem;
-    color: #666666;
+    color: #4e342e;
     padding: 0.5rem;
     border-radius: 0.25rem;
-    border: 1px solid #cccccc;
+    border: 2px solid #4e342e;
+    animation: ${fadeIn} 1s ease-in-out;
   }
 `;
+
 const StyledButton = styled(Button)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
   border-radius: 0.5rem;
-  color: #ffffff;
-  background-color: #795548;
+  color: #fff;
   padding: 0.5rem 2rem;
-  margin:auto;
-  &:hover {
-    background-color: #603f32;
+  margin: auto;
+  margin-top: 2rem;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  
+  &.MuiButton-root {
+    background-color: #3e2723;
+    color: #fff;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      background-color: #1b0000;
+      transform: translateY(-5px);
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    }
+    
+    &:active {
+      background-color: #4e342e;
+      transform: translateY(0);
+      box-shadow: none;
+      transition: all 0.2s ease-in-out;
+    }
+    
+    &::before {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: #fff;
+      border-radius: 50%;
+      transform: scale(0);
+      transition: all 0.3s ease-in-out;
+    }
+    
+    &:active::before {
+      transform: scale(40);
+      opacity: 0;
+      transition: all 0.3s ease-in-out;
+    }
   }
 `;
+
+
+const StyledSuccessMessage = styled(Typography)`
+  margin-top: 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #000000;
+  animation: ${fadeIn} 1s ease-in-out;
+`;
+
+    
+
+
 
 
 const StyledErrorMessage = styled(Typography)`
   margin-top: 1rem;
   font-size: 1rem;
   font-weight: bold;
-  color: #000000;
+  color: red;
+  animation: ${fadeIn} 1s ease-in-out;
 `;
 
 
@@ -109,7 +178,7 @@ const ProductCreate = () => {
       setSuccessMessage('Product created successfully!');
     } catch (err) {
       console.error(err);
-      setError('An error occurred. Please try again.');
+      setError('The Furniture Category must have a valid id and the fields can not be empty');
     }
   };
      
@@ -122,16 +191,22 @@ const ProductCreate = () => {
     }));
   };
 
+ 
   return (
     <Wrapper>
       <Heading>Create a New Product</Heading>
-      <form onSubmit={handleCreate}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
         <StyledTextField
           label="Product Name"
           id="name"
           name="name"
           value={newProduct.name}
           onChange={handleChange}
+          variant="outlined"
+          margin="dense"
+          size="small"
+          color="secondary"
+          sx={{ width: "100%" }}
         />
         <StyledTextField
           label="Furniture Category ID"
@@ -139,6 +214,9 @@ const ProductCreate = () => {
           name="furnitureCategoryId"
           value={newProduct.furnitureCategoryId}
           onChange={handleChange}
+          variant="outlined"
+          margin="dense"
+          size="small"
         />
         <StyledTextField
           label="Price"
@@ -146,32 +224,26 @@ const ProductCreate = () => {
           name="price"
           value={newProduct.price}
           onChange={handleChange}
+          variant="outlined"
+          margin="dense"
+          size="small"
         />
-        <StyledButton type="submit">Create Product</StyledButton>
+        <StyledButton onClick={handleCreate}>
+          Create Product
+        </StyledButton>
         {successMessage && (
-  <StyledErrorMessage >
-    {successMessage}
-  </StyledErrorMessage>
-)}
+          <StyledSuccessMessage>
+            {successMessage}
+          </StyledSuccessMessage>
+        )}
         {error && (
-          <StyledErrorMessage color="error">
+          <StyledErrorMessage>
             {error}
           </StyledErrorMessage>
         )}
-      </form>
+      </div>
     </Wrapper>
   );
 };
 
 export default ProductCreate;
-
-
-  
-
-
-
-
-
-
-
-
